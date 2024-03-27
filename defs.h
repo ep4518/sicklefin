@@ -25,10 +25,14 @@ typedef unsigned long long U64;
 #define NAME "Vice 1.0"
 #define BRD_SQ_NUM 120
 
+// Check
+#define OFFBOARD 120
+
 #define MAXGAMEMOVES 2048  // half moves
 
-enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bB, bR, bQ, bK };
+#define  START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
+enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
 enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
 enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
 enum { WHITE, BLACK, BOTH };
@@ -79,12 +83,12 @@ typedef struct {
 
     int castlePerm; // perm from enum above 0 - 7
 
-    U64 posKey; // unique key for each posistion
+    U64 posKey; // unique key for each posistion. SAME AS HASHKEY 
 
     int pceNum[13];     // peices on the board, index from enum above
     int bigPce[3];      // anything that isn't a pawn
     int majPce[3];      // number of rooks and queens
-    int minCe[3];       // number of bishops and knights
+    int minPce[3];       // number of bishops and knights
                         // each have 3 for black, white and both
     S_UNDO history[MAXGAMEMOVES];   // everytime a move is made, before executed, move is stored in history
                                     // move info is move, castlePerms, enPas, fiftyMove and uniqueKey before move
@@ -100,12 +104,26 @@ typedef struct {
 
 // converts file and rank to equiv 120 array based number
 #define FR2SQ(f,r) ( (21 + (f) ) + ( (r) * 10 ))
-#define SQ64(sq120) Sq120ToSq64[sq120]
+#define SQ64(sq120) (Sq120ToSq64[(sq120)])
+#define SQ120(sq64) (Sq64ToSq120[(sq64)])
+#define POP(b) PopBit(b)
+#define CNT(b) CountBits(b)
+#define CLRBIT(bb,sq) ((bb) &= ClearMask[BRD_SQ_NUM])
+#define SETBIT(bb,sq) ((bb) |= SetMask[(sq)])
 
 /* GLOBALS */
 
 extern int Sq120ToSq64[BRD_SQ_NUM];
 extern int Sq64ToSq120[64];
+extern U64 SetMask[64];
+extern U64 ClearMask[64];
+extern U64 PieceKeys[13][120];
+extern U64 SideKey;
+extern U64 CastleKeys[16];
+extern char PceChar[];
+extern char SideChar[];
+extern char RankChar[];
+extern char FileChar[];
 
 /* FUNCTIONS */
 
@@ -114,6 +132,16 @@ extern void AllInit();
 
 //  bitboards.c
 extern void PrintBitBoard(U64 bb);
+extern int PopBit (U64 *bb);
+extern int CountBits(U64 b);
+
+// hashkeys.c
+extern U64 GeneratePosKey(const S_BOARD *pos); 
+
+// boards.c
+extern void ResetBoard(S_BOARD *pos);
+extern int ParseFen(char *fen, S_BOARD *pos);
+extern void PrintBoard(const S_BOARD *pos);
 
 #endif
 
