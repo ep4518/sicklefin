@@ -23,29 +23,19 @@ int main() {
 
     AllInit();
 
-    S_BOARD board[1];
-
-    ParseFen(FEN4, board);
-    PrintBoard(board);
-    ASSERT(CheckBoard(board));
-
     int move = 0;
-    int from = 6; int to = 12;
-    int capt = wR; int prom = bR;
+    int from = A2; int to = H7;
+    int capt = wR; int prom = bQ;
 
     move = ( from ) | ( to << 7 ) | (capt << 14 ) | (prom << 20);
-
-    printf("\ndec:%d hex: %X\n", move, move);
-    PrintBin(move);
 
     printf("from: %d to: %d capt: %d prom: %d\n", 
         FROMSQ(move), TOSQ(move), CAPTURED(move),
         PROMOTED(move));
 
-    move |= MFLAGPS;
-
-    printf("is PST: %s\n", (move & MFLAGPS) ? "YES" : "NO");
-
+    printf("Algebraic from:%s\n", PrSq(from));
+    printf("Algebraic to:%s\n", PrSq(to));
+    printf("Algebraic move:%s\n", PrMove(move));
 
     return 0;
 }

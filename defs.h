@@ -198,6 +198,10 @@ extern int CheckBoard(const S_BOARD *pos);
 // attack.c
 extern int SqAttacked(const int sq, const int side, const S_BOARD *pos);
 
+// io.c
+extern char *PrMove(const int move);
+extern char *PrSq(const int sq);
+
 #endif
 
 // for generating all the moves for a player, rather than iterate the board, find peices and then generate moves
