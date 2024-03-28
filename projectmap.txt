@@ -1,0 +1,18 @@
+Project Map
+
+So far:
+    Board Setup
+    FEN
+    Setup a posistion
+
+To Come:
+    SqAttacked(sq,side)
+    SetUp Move Structure
+    Do / Undo ()
+
+MILESTONE : Perft() Testing
+
+Skeleton Evaluation()
+Search();
+
+Connect GUI Arena()
