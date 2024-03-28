@@ -8,23 +8,13 @@
 #define FEN4 "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"
 #define FEN2Q "8/3q1p2/8/5P2/4Q3/8/8/8 w - - 0 2"
 
-void ShowSqAttBySide(const int side, const S_BOARD *pos) {
-
-    int rank = 0;
-    int file = 0;
-    int sq = 0;
-
-    printf("\n\nSquares attacked by:%c\n", SideChar[side]);
-    for (rank = RANK_8; rank >= RANK_1; --rank) {
-        for (file = FILE_A; file <= FILE_H; ++file) {
-            sq = FR2SQ(file, rank);
-            if (SqAttacked(sq, side, pos) == TRUE) {
-                printf("X");
-            } else {
-                printf("-");
-            }
-        }
-        printf("\n");
+void PrintBin(int move) {
+    int i;
+    printf("As binary: ");
+    for (i = 27; i >= 0; i--) {
+        if ((1<<i) & move) printf("1");
+        else printf("0");
+        if (i!=28 && i%4==0) printf(" ");
     }
     printf("\n");
 }
@@ -35,69 +25,27 @@ int main() {
 
     S_BOARD board[1];
 
-    ParseFen(FEN2Q, board);
-
+    ParseFen(FEN4, board);
     PrintBoard(board);
-    printf("\n\nWhite Attacking: \n");
-    ShowSqAttBySide(WHITE, board);
+    ASSERT(CheckBoard(board));
 
-    printf("\n\nBlack Attacking: \n");
-    ShowSqAttBySide(BLACK, board);
-    // ASSERT(CheckBoard(board));
-    // printf("\nwP:\n");
-    // PrintBitBoard(board->pawns[WHITE]);
-    // printf("\nbP:\n");
-    // PrintBitBoard(board->pawns[BLACK]); 
-    // printf("\nall P:\n");
-    // PrintBitBoard(board->pawns[BOTH]);
+    int move = 0;
+    int from = 6; int to = 12;
+    int capt = wR; int prom = bR;
 
-    // ParseFen(START_FEN, board);
-    // PrintBoard(board);
-    // ParseFen(FEN1, board);
-    // PrintBoard(board);
-    // ParseFen(FEN2, board);
-    // PrintBoard(board);
-    // ParseFen(FEN3, board);
-    // PrintBoard(board);
+    move = ( from ) | ( to << 7 ) | (capt << 14 ) | (prom << 20);
 
-    // U64 playBitBoard = 0ULL;
+    printf("\ndec:%d hex: %X\n", move, move);
+    PrintBin(move);
 
-    // playBitBoard |= (1ULL << SQ64(D2));
-    // playBitBoard |= (1ULL << SQ64(D3));
-    // playBitBoard |= (1ULL << SQ64(D4));
+    printf("from: %d to: %d capt: %d prom: %d\n", 
+        FROMSQ(move), TOSQ(move), CAPTURED(move),
+        PROMOTED(move));
 
-    // int sq64 = 0;
-    // while (playBitBoard) {
-    //     sq64 = POP(&playBitBoard);
-    //     printf("Popped: %d", sq64);
-    //     PrintBitBoard(playBitBoard);
-    // }
-    // // U64 playBitBoard = 0ULL;
+    move |= MFLAGPS;
 
-    // printf("Start:\n\n");
-    // PrintBitBoard(playBitBoard);
+    printf("is PST: %s\n", (move & MFLAGPS) ? "YES" : "NO");
 
-    // playBitBoard |= (1ULL << SQ64(D2));
-    // printf("D2 Added:\n\n");
-    // PrintBitBoard(playBitBoard);
-
-    // playBitBoard |= (1ULL << SQ64(G2));
-    // printf("G2 Added:\n\n");
-    // PrintBitBoard(playBitBoard);
-
-    // for (int index = 0; index < BRD_SQ_NUM; ++index) {
-    //     if (index%10 == 0) printf("\n");
-    //     printf("%5d", Sq120ToSq64[index]);
-    // }
-
-    // printf("\n\n");
-
-    // for (int index = 0; index < 64; ++index) {
-    //     if (index % 8 == 0) printf("\n");
-    //     printf("%5d", Sq64ToSq120[index]);
-    // }
-
-    // printf("\n\n");
 
     return 0;
 }
