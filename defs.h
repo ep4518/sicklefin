@@ -177,6 +177,7 @@ extern int PieceKnight[13];
 extern int PieceKing[13];
 extern int PieceRookQueen[13];
 extern int PieceBishopQueen[13];
+extern int PieceSlides[13];
 
 /* FUNCTIONS */
 
@@ -210,7 +211,7 @@ extern void PrintMoveList(const S_MOVELIST *list);
 extern int SqOnBoard(const int sq);
 extern int SideValid(const int side);
 extern int FileRankValid(const int fr);
-extern int PiecValidEmpty(const int pce);
+extern int PieceValidEmpty(const int pce);
 extern int PieceValid(const int pce);
 
 // movegen.c
