@@ -248,11 +248,14 @@ void ResetBoard(S_BOARD * pos) {
         pos->pieces[SQ120(index)] = EMPTY;
     }
 
-    for (index = 0; index < 3; ++ index) {
+    for (index = 0; index < 2; ++index) {
         pos->bigPce[index] = 0;
         pos->majPce[index] = 0;
         pos->minPce[index] = 0;
         pos->material[index] = 0;
+    }
+
+    for (index = 0; index < 3; ++index) {
         pos->pawns[index] = 0ULL;
     }
 
@@ -267,7 +270,7 @@ void ResetBoard(S_BOARD * pos) {
     pos->fiftyMove = 0;
 
     pos->ply = 0;
-    pos->hisply = 0;
+    pos->hisPly = 0;
 
     pos->castlePerm = 0;
 

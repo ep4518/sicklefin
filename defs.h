@@ -69,8 +69,8 @@ typedef struct {
 
     int move;
     int castlePerm;
-    int enp;
-    int fifty;
+    int enPas;
+    int fiftyMove;
     U64 posKey;
 
 } S_UNDO;
@@ -89,7 +89,7 @@ typedef struct {
     int fiftyMove; // fifty move counter
 
     int ply; // how many half moves
-    int hisply; // total number of half moves
+    int hisPly; // total number of half moves
 
     int castlePerm; // perm from enum above 0 - 7
 
@@ -169,6 +169,7 @@ extern int PieceMaj[13];
 extern int PieceMin[13];
 extern int PieceVal[13];
 extern int PieceCol[13];
+extern int PiecePawn[13];
 
 extern int FilesBrd[BRD_SQ_NUM];
 extern int RanksBrd[BRD_SQ_NUM];
