@@ -5,7 +5,7 @@
 
 /* Define ASSERT */
 // define DEBUG for debugging
-#define DEBUG
+// #define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)
@@ -26,9 +26,9 @@ typedef unsigned long long U64;
 #define BRD_SQ_NUM 120
 
 #define MAXGAMEMOVES 2048  // half moves
-#define MAXPOSITONMOVES 256 
+#define MAXPOSITIONMOVES 256 
 
-#define  START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define  START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR b KQkq - 0 1"
 
 enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
 enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
@@ -60,7 +60,7 @@ typedef struct {
 } S_MOVE;
 
 typedef struct{
-    S_MOVE moves[MAXPOSITONMOVES];
+    S_MOVE moves[MAXPOSITIONMOVES];
     int count;
 } S_MOVELIST;
 
@@ -142,7 +142,7 @@ typedef struct {
 #define SQ120(sq64) (Sq64ToSq120[(sq64)])
 #define POP(b) PopBit(b)
 #define CNT(b) CountBits(b)
-#define CLRBIT(bb,sq) ((bb) &= ClearMask[BRD_SQ_NUM])
+#define CLRBIT(bb,sq) ((bb) &= ClearMask[sq])
 #define SETBIT(bb,sq) ((bb) |= SetMask[(sq)])
 
 #define IsBQ(p) (PieceBishopQueen[(p)])
@@ -217,6 +217,13 @@ extern int PieceValid(const int pce);
 
 // movegen.c
 extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
+
+// makemove.c
+extern int MakeMove(S_BOARD *pos, int move);
+extern void TakeMove(S_BOARD *pos);
+
+// perft.c
+extern void PerftTest(int depth, S_BOARD *pos);
 
 #endif
 
