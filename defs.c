@@ -26,6 +26,8 @@ int main() {
 
     char input[6];
     int Move = NOMOVE;
+    int PvNum = 0;
+    int Max = 0;
 
     while (TRUE) {
         printf("tick\n");
@@ -42,6 +44,7 @@ int main() {
         } else {
             Move = ParseMove(input, board);
             if (Move != NOMOVE) {
+                StorePvMove(board, Move);
                 MakeMove(board, Move);
                 // if (IsRepetition(board)) {
                 //     printf("REP SEEN\n");
