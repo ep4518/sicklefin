@@ -4,6 +4,7 @@
 #include "stdio.h"
 
 void SearchPosistion(S_BOARD *pos) {
+}
 
 int IsRepetition(const S_BOARD *pos) {
     int index = 0;
@@ -15,5 +16,4 @@ int IsRepetition(const S_BOARD *pos) {
         }
     }
     return FALSE;
-}
 }
