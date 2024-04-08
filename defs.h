@@ -24,6 +24,8 @@ typedef unsigned long long U64;
 
 #define NAME "Vice 1.0"
 #define BRD_SQ_NUM 120
+#define INFINITE 30000 
+#define MATE 0
 
 #define MAXGAMEMOVES 2048  // half moves
 #define MAXPOSITIONMOVES 256 
@@ -142,6 +144,9 @@ typedef struct {
 
     int quit;
     int stopped;
+
+    float fh;
+    float fhf;
 } S_SEARCHINFO;
 
 /* GAME MOVE */
@@ -263,7 +268,7 @@ extern void TakeMove(S_BOARD *pos);
 extern void PerftTest(int depth, S_BOARD *pos);
 
 // search.c
-extern void SearchPositsion(S_BOARD *pos);
+extern void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info);
 
 // misc.c
 extern int GetTimeMs();
@@ -272,6 +277,13 @@ extern int GetTimeMs();
 extern void InitPvTable(S_PVTABLE *table);
 extern void StorePvMove(const S_BOARD *pos, const int move);
 extern int ProbePvTable(const S_BOARD *pos);
+extern int ProbePvMove(const S_BOARD *pos);
+extern int GetPvLine(const int depth, S_BOARD *pos);
+// extern void ClearHashTable(S_HASHTABLE *table);
+extern void ClearPvTable(S_PVTABLE * table);
+
+// evaluate.c
+extern int EvalPosition(const S_BOARD *pos);
 
 #endif
 

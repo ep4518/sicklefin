@@ -20,9 +20,8 @@ int main() {
 
     S_BOARD board[1];
     S_MOVELIST list[1];
-
+    S_SEARCHINFO info[1];
     ParseFen(START_FEN, board);
-    PerftTest(3, board);
 
     char input[6];
     int Move = NOMOVE;
@@ -30,7 +29,6 @@ int main() {
     int Max = 0;
 
     while (TRUE) {
-        printf("tick\n");
         PrintBoard(board);
         printf("Please enter a move > ");
         fgets(input, 6, stdin);
@@ -39,8 +37,9 @@ int main() {
             break;
         } else if(input[0] == 't') {
             TakeMove(board);
-        } else if (input[0] == 'p'){
-            PerftTest(4,board);
+        } else if (input[0] == 's'){
+            info->depth = 4;
+            SearchPosition(board, info);
         } else {
             Move = ParseMove(input, board);
             if (Move != NOMOVE) {
