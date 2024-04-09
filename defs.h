@@ -259,6 +259,7 @@ extern int PieceValid(const int pce);
 // movegen.c
 extern void GenerateAllMoves(const S_BOARD *pos, S_MOVELIST *list);
 extern int MoveExists(S_BOARD *pos, const int move);
+extern int InitMvvLva();
 
 // makemove.c
 extern int MakeMove(S_BOARD *pos, int move);
@@ -277,7 +278,7 @@ extern int GetTimeMs();
 extern void InitPvTable(S_PVTABLE *table);
 extern void StorePvMove(const S_BOARD *pos, const int move);
 extern int ProbePvTable(const S_BOARD *pos);
-extern int ProbePvMove(const S_BOARD *pos);
+// extern int ProbePvMove(const S_BOARD *pos);
 extern int GetPvLine(const int depth, S_BOARD *pos);
 // extern void ClearHashTable(S_HASHTABLE *table);
 extern void ClearPvTable(S_PVTABLE * table);

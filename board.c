@@ -276,7 +276,6 @@ void ResetBoard(S_BOARD * pos) {
 
     pos->posKey = 0ULL;
     // Missing peice list but will do seperately
-    InitPvTable(pos->PvTable);
 }
 
 void PrintBoard(const S_BOARD *pos) {

@@ -43,7 +43,6 @@ void ClearPvTable(S_PVTABLE * table) {
 void InitPvTable(S_PVTABLE *table) {
     table->numEntries = PvSize / sizeof(S_PVENTRY);
     table->numEntries -= 2;
-    free(table->pTable);
     table->pTable = (S_PVENTRY *) malloc(table->numEntries * sizeof(S_PVENTRY)); // declare memory as pointer type of S_PVENTRY
     // equiv would be table->pTable[table->numEntries]; for static allocation
     ClearPvTable(table);
