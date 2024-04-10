@@ -16,3 +16,9 @@ Skeleton Evaluation()
 Search();
 
 Connect GUI Arena()
+
+
+uciLoop()
+
+parsePosistionCommand()
+parseGoCommand()
