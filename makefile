@@ -7,15 +7,15 @@ clear_screen:
 
 build:
 	@echo "Building the project..."
-	gcc defs.c init.c bitboards.c board.c hashkeys.c data.c attack.c io.c movegen.c validate.c makemove.c perft.c search.c misc.c pvtable.c evaluate.c uci.c -o engine
+	gcc vice.c init.c bitboards.c board.c hashkeys.c data.c attack.c io.c movegen.c validate.c makemove.c perft.c search.c misc.c pvtable.c evaluate.c uci.c -o engine
 
 sane:
 	@echo "Building the project sane..."
-	gcc ${DEBUG_FLAGS} defs.c init.c bitboards.c board.c hashkeys.c data.c attack.c io.c movegen.c validate.c makemove.c perft.c search.c misc.c pvtable.c evaluate.c uci.c -o engine
+	gcc ${DEBUG_FLAGS} vice.c init.c bitboards.c board.c hashkeys.c data.c attack.c io.c movegen.c validate.c makemove.c perft.c search.c misc.c pvtable.c evaluate.c uci.c -o engine
 
 gdb:
 	@echo "Building the project sane..."
-	gcc -g defs.c init.c bitboards.c board.c hashkeys.c data.c attack.c io.c movegen.c validate.c makemove.c perft.c search.c misc.c pvtable.c evaluate.c uci.c -o engine
+	gcc -g vice.c init.c bitboards.c board.c hashkeys.c data.c attack.c io.c movegen.c validate.c makemove.c perft.c search.c misc.c pvtable.c evaluate.c uci.c -o engine
 
 
 clean:

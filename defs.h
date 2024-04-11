@@ -3,16 +3,14 @@
 
 #include "stdlib.h"
 
-/* Define ASSERT */
-// define DEBUG for debugging
-// #define DEBUG
+//#define DEBUG
 
 #ifndef DEBUG
 #define ASSERT(n)
 #else
 #define ASSERT(n) \
 if(!(n)) { \
-printf("%s - Failed ", #n); \
+printf("%s - Failed",#n); \
 printf("On %s ",__DATE__); \
 printf("At %s ",__TIME__); \
 printf("In File %s ",__FILE__); \
@@ -24,165 +22,154 @@ typedef unsigned long long U64;
 
 #define NAME "Vice 1.0"
 #define BRD_SQ_NUM 120
-#define INFINITE 30000 
-#define MATE 0
 
-#define MAXGAMEMOVES 2048  // half moves
-#define MAXPOSITIONMOVES 256 
+#define MAXGAMEMOVES 2048
+#define MAXPOSITIONMOVES 256
 #define MAXDEPTH 64
 
-#define  START_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
+#define START_FEN  "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
 
-enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK };
+enum { EMPTY, wP, wN, wB, wR, wQ, wK, bP, bN, bB, bR, bQ, bK  };
 enum { FILE_A, FILE_B, FILE_C, FILE_D, FILE_E, FILE_F, FILE_G, FILE_H, FILE_NONE };
 enum { RANK_1, RANK_2, RANK_3, RANK_4, RANK_5, RANK_6, RANK_7, RANK_8, RANK_NONE };
+
 enum { WHITE, BLACK, BOTH };
+
 enum {
-    A1 = 21, B1, C1, D1, E1, F1, G1, H1,
-    A2 = 31, B2, C2, D2, E2, F2, G2, H2,
-    A3 = 41, B3, C3, D3, E3, F3, G3, H3,
-    A4 = 51, B4, C4, D4, E4, F4, G4, H4,
-    A5 = 61, B5, C5, D5, E5, F5, G5, H5,
-    A6 = 71, B6, C6, D6, E6, F6, G6, H6,
-    A7 = 81, B7, C7, D7, E7, F7, G7, H7,
-    A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ, OFFBOARD
+  A1 = 21, B1, C1, D1, E1, F1, G1, H1,
+  A2 = 31, B2, C2, D2, E2, F2, G2, H2,
+  A3 = 41, B3, C3, D3, E3, F3, G3, H3,
+  A4 = 51, B4, C4, D4, E4, F4, G4, H4,
+  A5 = 61, B5, C5, D5, E5, F5, G5, H5,
+  A6 = 71, B6, C6, D6, E6, F6, G6, H6,
+  A7 = 81, B7, C7, D7, E7, F7, G7, H7,
+  A8 = 91, B8, C8, D8, E8, F8, G8, H8, NO_SQ, OFFBOARD
 };
 
 enum { FALSE, TRUE };
 
-// White/ Black, King/ Queen, Castling.
-//      0 0 0 0 => castling permutations
-// can only castle once for each option
 enum { WKCA = 1, WQCA = 2, BKCA = 4, BQCA = 8 };
 
 typedef struct {
-
-    int move;
-    int score;
-
+	int move;
+	int score;
 } S_MOVE;
 
-typedef struct{
-    S_MOVE moves[MAXPOSITIONMOVES];
-    int count;
+typedef struct {
+	S_MOVE moves[MAXPOSITIONMOVES];
+	int count;
 } S_MOVELIST;
 
 typedef struct {
-    U64 posKey;
-    int move;
-} S_PVENTRY; // Principal variation entry, if move beats alpha
+	U64 posKey;
+	int move;
+} S_PVENTRY;
 
 typedef struct {
-    S_PVENTRY *pTable;
-    int numEntries;
+	S_PVENTRY *pTable;
+	int numEntries;
 } S_PVTABLE;
 
-// contains info to undo a move
 typedef struct {
-
-    int move;
-    int castlePerm;
-    int enPas;
-    int fiftyMove;
-    U64 posKey;
+	
+	int move;
+	int castlePerm;
+	int enPas;
+	int fiftyMove;
+	U64 posKey;
 
 } S_UNDO;
 
-// Defining board structure
 typedef struct {
 
-    int pieces[BRD_SQ_NUM];
-    // 3 because 1, 2, 3 represent WHITE, BLACK, BOTH
-    U64 pawns[3]; // 01000000 where the 64 bit number represents all board locations of rank 1 e.g. A1 -> H1 to rank 8
-    
-    int KingSq[2];
+	int pieces[BRD_SQ_NUM];
+	U64 pawns[3];
+		
+	int KingSq[2];
+	
+	int side;
+	int enPas;
+	int fiftyMove;
+	
+	int ply;
+	int hisPly;
+	
+	int castlePerm;
+	
+	U64 posKey;
+	
+	int pceNum[13];
+	int bigPce[2];
+	int majPce[2];
+	int minPce[2];
+	int material[2];
+	
+	S_UNDO history[MAXGAMEMOVES];
+	
+	// piece list
+	int pList[13][10];	
 
-    int side; // side to move
-    int enPas;  // Optional en passant square
-    int fiftyMove; // fifty move counter
-
-    int ply; // how many half moves
-    int hisPly; // total number of half moves
-
-    int castlePerm; // perm from enum above 0 - 7
-
-    U64 posKey; // unique key for each posistion. SAME AS HASHKEY 
-
-    int material[2];
-    int pceNum[13];     // peices on the board, index from enum above
-    int bigPce[2];      // anything that isn't a pawn
-    int majPce[2];      // number of rooks and queens
-    int minPce[2];       // number of bishops and knights
-                        // each have 3 for black, white and both
-    S_UNDO history[MAXGAMEMOVES];   // everytime a move is made, before executed, move is stored in history
-                                    // move info is move, castlePerms, enPas, fiftyMove and uniqueKey before move
-    // piece list
-    int pList[13][10];
-
-    // pList[wN][0] = E1; pList[wN][1] = D4; ...
-    // Can now iterate through piece list for move generation
-
-    S_PVTABLE PvTable[1];
-    int PvArray[MAXDEPTH];
-
-    int searchHistory[13][BRD_SQ_NUM];
-    int searchKillers[2][MAXDEPTH];
-
+	S_PVTABLE PvTable[1];	
+	int PvArray[MAXDEPTH];
+	
+	int searchHistory[13][BRD_SQ_NUM];
+	int searchKillers[2][MAXDEPTH];
+	
 } S_BOARD;
 
 typedef struct {
 
-    int starttime;
-    int stoptime;
-    int depth;
-    int depthset;
-    int timeset;
-    int movestogo;
-    int infinite;
+	int starttime;
+	int stoptime;
+	int depth;
+	int timeset;
+	int movestogo;
+	
+	long nodes;
+	
+	int quit;
+	int stopped;
+	
+	float fh;
+	float fhf;
 
-    long nodes;
-
-    int quit;
-    int stopped;
-
-    float fh;
-    float fhf;
 } S_SEARCHINFO;
 
 /* GAME MOVE */
 
-/* 
-  0    0    0    0    0    7    F  -> 7 bits for 120 squares
-0000 0000 0000 0000 0000 0111 1111 -> From 0x7F 
+/*                         	                        
+0000 0000 0000 0000 0000 0111 1111 -> From 0x7F
 0000 0000 0000 0011 1111 1000 0000 -> To >> 7, 0x7F
-0000 0000 0011 1100 0000 0000 0000 -> Captured >> 14,  0xF
-0000 0000 0100 0000 0000 0000 0000 -> EnPas 0x40000
-0000 0000 1000 0000 0000 0000 0000 -> Pawn Start 0x800000
+0000 0000 0011 1100 0000 0000 0000 -> Captured >> 14, 0xF
+0000 0000 0100 0000 0000 0000 0000 -> EP 0x40000
+0000 0000 1000 0000 0000 0000 0000 -> Pawn Start 0x80000
 0000 1111 0000 0000 0000 0000 0000 -> Promoted Piece >> 20, 0xF
 0001 0000 0000 0000 0000 0000 0000 -> Castle 0x1000000
 */
 
 #define FROMSQ(m) ((m) & 0x7F)
-#define TOSQ(m) (((m)>>7) & 0x7F) 
+#define TOSQ(m) (((m)>>7) & 0x7F)
 #define CAPTURED(m) (((m)>>14) & 0xF)
 #define PROMOTED(m) (((m)>>20) & 0xF)
+
 #define MFLAGEP 0x40000
 #define MFLAGPS 0x80000
 #define MFLAGCA 0x1000000
-#define MFLAGCAP 0x7c000
-#define MFLAGPROM 0xF00000       
+
+#define MFLAGCAP 0x7C000
+#define MFLAGPROM 0xF00000
 
 #define NOMOVE 0
 
+
 /* MACROS */
 
-// converts file and rank to equiv 120 array based number
-#define FR2SQ(f,r) ( (21 + (f) ) + ( (r) * 10 ))
+#define FR2SQ(f,r) ( (21 + (f) ) + ( (r) * 10 ) ) 
 #define SQ64(sq120) (Sq120ToSq64[(sq120)])
 #define SQ120(sq64) (Sq64ToSq120[(sq64)])
 #define POP(b) PopBit(b)
 #define CNT(b) CountBits(b)
-#define CLRBIT(bb,sq) ((bb) &= ClearMask[sq])
+#define CLRBIT(bb,sq) ((bb) &= ClearMask[(sq)])
 #define SETBIT(bb,sq) ((bb) |= SetMask[(sq)])
 
 #define IsBQ(p) (PieceBishopQueen[(p)])
@@ -225,15 +212,15 @@ extern int PieceSlides[13];
 // init.c
 extern void AllInit();
 
-//  bitboards.c
+// bitboards.c
 extern void PrintBitBoard(U64 bb);
-extern int PopBit (U64 *bb);
+extern int PopBit(U64 *bb);
 extern int CountBits(U64 b);
 
 // hashkeys.c
-extern U64 GeneratePosKey(const S_BOARD *pos); 
+extern U64 GeneratePosKey(const S_BOARD *pos);
 
-// boards.c
+// board.c
 extern void ResetBoard(S_BOARD *pos);
 extern int ParseFen(char *fen, S_BOARD *pos);
 extern void PrintBoard(const S_BOARD *pos);
@@ -249,7 +236,7 @@ extern char *PrSq(const int sq);
 extern void PrintMoveList(const S_MOVELIST *list);
 extern int ParseMove(char *ptrChar, S_BOARD *pos);
 
-// validate.c
+//validate.c
 extern int SqOnBoard(const int sq);
 extern int SideValid(const int side);
 extern int FileRankValid(const int fr);
@@ -266,13 +253,13 @@ extern int InitMvvLva();
 extern int MakeMove(S_BOARD *pos, int move);
 extern void TakeMove(S_BOARD *pos);
 
-// perft.c
+// perft.c 
 extern void PerftTest(int depth, S_BOARD *pos);
 
 // search.c
 extern void SearchPosition(S_BOARD *pos, S_SEARCHINFO *info);
 
-// misc.c
+// misc.c 
 extern int GetTimeMs();
 extern void ReadInput(S_SEARCHINFO *info);
 
@@ -280,18 +267,28 @@ extern void ReadInput(S_SEARCHINFO *info);
 extern void InitPvTable(S_PVTABLE *table);
 extern void StorePvMove(const S_BOARD *pos, const int move);
 extern int ProbePvTable(const S_BOARD *pos);
-// extern int ProbePvMove(const S_BOARD *pos);
 extern int GetPvLine(const int depth, S_BOARD *pos);
-// extern void ClearHashTable(S_HASHTABLE *table);
-extern void ClearPvTable(S_PVTABLE * table);
+extern void ClearPvTable(S_PVTABLE *table);
 
 // evaluate.c
 extern int EvalPosition(const S_BOARD *pos);
 
-// uci.c
+// uci.c 
 extern void Uci_Loop();
 
 #endif
 
-// for generating all the moves for a player, rather than iterate the board, find peices and then generate moves
-// It is more efficient to hold a piece list
+
+
+
+
+
+
+
+
+
+
+
+
+
+
